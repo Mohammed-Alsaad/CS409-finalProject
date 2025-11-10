@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { tasksAPI, Task } from '../api/api';
-import { format, isPast, isToday, addDays, differenceInDays } from 'date-fns';
+import { isPast, isToday, differenceInDays } from 'date-fns';
 import TaskCard from '../components/TaskCard';
 import TaskModal from '../components/TaskModal';
 import SuggestionsModal from '../components/SuggestionsModal';
@@ -52,7 +52,6 @@ const Dashboard: React.FC = () => {
   };
 
   const getFilteredTasks = () => {
-    const now = new Date();
     return tasks.filter(task => {
       const dueDate = new Date(task.next_due_date);
       if (filter === 'upcoming') {
