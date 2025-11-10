@@ -1,0 +1,33 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'server/**'
+      - 'package.json'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:
+
+jobs:
+  # This workflow is a template for deploying the backend
+  # You'll need to configure it based on your hosting provider
+  deploy-info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deployment Instructions
+        run: |
+          echo "## Backend Deployment Required" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The backend cannot be deployed to GitHub Pages." >> $GITHUB_STEP_SUMMARY
+          echo "Please deploy to one of these services:" >> $GITHUB_STEP_SUMMARY
+          echo "- Railway (railway.app)" >> $GITHUB_STEP_SUMMARY
+          echo "- Render (render.com)" >> $GITHUB_STEP_SUMMARY
+          echo "- Heroku (heroku.com)" >> $GITHUB_STEP_SUMMARY
+          echo "- Fly.io (fly.io)" >> $GITHUB_STEP_SUMMARY
+          echo "- AWS/Google Cloud/Azure" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "See DEPLOYMENT.md for detailed instructions." >> $GITHUB_STEP_SUMMARY
+

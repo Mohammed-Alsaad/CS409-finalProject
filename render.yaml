@@ -1,0 +1,14 @@
+# Render.com configuration
+services:
+  - type: web
+    name: home-maintenance-planner-api
+    env: node
+    buildCommand: npm install
+    startCommand: npm run server
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+    # Add your other environment variables in the Render dashboard
+
