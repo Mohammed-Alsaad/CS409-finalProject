@@ -7,10 +7,14 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import './App.css';
 
+// Get the basename from PUBLIC_URL (set by homepage in package.json)
+// This is needed for GitHub Pages subdirectory routing
+const basename = process.env.PUBLIC_URL || '/CS409-finalProject';
+
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router basename={basename}>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

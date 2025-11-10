@@ -3,7 +3,7 @@ import axios from 'axios';
 // API URL: Use environment variable for production, localhost for development
 const API_URL = process.env.REACT_APP_API_URL || 
   (process.env.NODE_ENV === 'production' 
-    ? 'https://your-backend-url.com/api'  // Update this with your deployed backend URL
+    ? 'https://home-maintenance-planner-api.onrender.com/api'  // Render backend URL
     : 'http://localhost:5000/api');
 
 const api = axios.create({
