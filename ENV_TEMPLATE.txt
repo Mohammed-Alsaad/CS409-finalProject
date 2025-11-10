@@ -1,0 +1,16 @@
+# Copy this content into a new file named .env in the project root directory
+
+# Server Configuration
+PORT=5000
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-use-a-random-string
+
+# Email Configuration (Optional - for email reminders)
+# If not configured, reminders will be logged to console only
+# For Gmail: Use an App Password (not your regular password)
+# Generate one at: https://myaccount.google.com/apppasswords
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password-here
+SMTP_FROM=noreply@homemaintenance.com
+

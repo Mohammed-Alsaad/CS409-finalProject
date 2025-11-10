@@ -1,0 +1,21 @@
+node_modules/
+client/node_modules/
+*.log
+.env
+server/database/*.db
+.DS_Store
+build/
+dist/
+*.sqlite
+*.sqlite3
+
+# Test files
+test-email.js
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
