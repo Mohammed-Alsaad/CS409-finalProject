@@ -83,6 +83,70 @@
   display: flex;
   gap: 15px;
   margin-bottom: 30px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 0;
+  background: white;
+  border-radius: 8px;
+  padding: 4px;
+  border: 2px solid #e0e0e0;
+  margin-left: auto;
+}
+
+.view-toggle button {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.view-toggle button:hover {
+  background: #f0f0f0;
+}
+
+.view-toggle button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.selected-date-filter {
+  background: #e3f2fd;
+  border: 2px solid #3498db;
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.selected-date-filter strong {
+  color: #1976d2;
+}
+
+.btn-clear-filter {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-clear-filter:hover {
+  background: #2980b9;
 }
 
 .btn-primary {

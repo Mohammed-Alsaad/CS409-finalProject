@@ -36,6 +36,7 @@ export interface Task {
   description?: string;
   category?: string;
   frequency_days?: number;
+  reminder_days_before?: number;
   last_completed?: string;
   next_due_date: string;
   status: 'pending' | 'completed';

@@ -15,6 +15,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, onClose, onSave }) => {
     description: '',
     category: '',
     frequency_days: '',
+    reminder_days_before: '3',
     next_due_date: '',
     priority: 'medium' as 'low' | 'medium' | 'high',
   });
@@ -28,6 +29,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, onClose, onSave }) => {
         description: task.description || '',
         category: task.category || '',
         frequency_days: task.frequency_days?.toString() || '',
+        reminder_days_before: task.reminder_days_before?.toString() || '3',
         next_due_date: task.next_due_date ? format(new Date(task.next_due_date), 'yyyy-MM-dd') : '',
         priority: task.priority,
       });
@@ -38,6 +40,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, onClose, onSave }) => {
         description: '',
         category: '',
         frequency_days: '',
+        reminder_days_before: '3',
         next_due_date: format(new Date(), 'yyyy-MM-dd'),
         priority: 'medium',
       });
@@ -53,6 +56,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, onClose, onSave }) => {
       const taskData = {
         ...formData,
         frequency_days: formData.frequency_days ? parseInt(formData.frequency_days) : undefined,
+        reminder_days_before: formData.reminder_days_before ? parseInt(formData.reminder_days_before) : 3,
       };
 
       if (task) {
@@ -152,6 +156,26 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, onClose, onSave }) => {
                 placeholder="e.g., 90"
               />
             </div>
+          </div>
+
+          <div className="form-group">
+            <label>Email Reminder (days before due)</label>
+            <select 
+              name="reminder_days_before" 
+              value={formData.reminder_days_before} 
+              onChange={handleChange}
+            >
+              <option value="0">On due date</option>
+              <option value="1">1 day before</option>
+              <option value="2">2 days before</option>
+              <option value="3">3 days before (default)</option>
+              <option value="5">5 days before</option>
+              <option value="7">1 week before</option>
+              <option value="14">2 weeks before</option>
+            </select>
+            <small style={{ color: '#666', fontSize: '12px', display: 'block', marginTop: '4px' }}>
+              You'll receive an email reminder this many days before the task is due
+            </small>
           </div>
 
           <div className="modal-actions">

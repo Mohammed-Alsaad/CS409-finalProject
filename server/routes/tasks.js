@@ -1,6 +1,7 @@
 const express = require('express');
 const { getDb } = require('../database/db');
 const { authenticateToken } = require('../middleware/auth');
+const { sendCompletionEmail } = require('../services/emailService');
 
 const router = express.Router();
 
@@ -53,16 +54,16 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
   const db = getDb();
   const userId = req.user.id;
-  const { title, description, category, frequency_days, next_due_date, priority } = req.body;
+  const { title, description, category, frequency_days, reminder_days_before, next_due_date, priority } = req.body;
 
   if (!title || !next_due_date) {
     return res.status(400).json({ error: 'Title and next_due_date are required' });
   }
 
-  db.run(
-    `INSERT INTO tasks (user_id, title, description, category, frequency_days, next_due_date, priority)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [userId, title, description || null, category || null, frequency_days || null, next_due_date, priority || 'medium'],
+    db.run(
+    `INSERT INTO tasks (user_id, title, description, category, frequency_days, reminder_days_before, next_due_date, priority)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [userId, title, description || null, category || null, frequency_days || null, reminder_days_before || 3, next_due_date, priority || 'medium'],
     function(err) {
       if (err) {
         return res.status(500).json({ error: 'Failed to create task' });
@@ -75,6 +76,7 @@ router.post('/', (req, res) => {
           description,
           category,
           frequency_days,
+          reminder_days_before: reminder_days_before || 3,
           next_due_date,
           priority,
           status: 'pending'
@@ -119,6 +121,10 @@ router.put('/:id', (req, res) => {
       updates.push('frequency_days = ?');
       values.push(frequency_days);
     }
+    if (reminder_days_before !== undefined) {
+      updates.push('reminder_days_before = ?');
+      values.push(reminder_days_before);
+    }
     if (next_due_date !== undefined) {
       updates.push('next_due_date = ?');
       values.push(next_due_date);
@@ -158,47 +164,66 @@ router.post('/:id/complete', (req, res) => {
   const taskId = req.params.id;
   const { notes } = req.body;
 
-  // Get task details
-  db.get('SELECT * FROM tasks WHERE id = ? AND user_id = ?', [taskId, userId], (err, task) => {
-    if (err) {
-      return res.status(500).json({ error: 'Database error' });
-    }
-    if (!task) {
-      return res.status(404).json({ error: 'Task not found' });
-    }
-
-    const today = new Date().toISOString().split('T')[0];
-
-    // Add to history
-    db.run(
-      'INSERT INTO task_history (task_id, completed_date, notes) VALUES (?, ?, ?)',
-      [taskId, today, notes || null],
-      (err) => {
-        if (err) {
-          return res.status(500).json({ error: 'Failed to record completion' });
-        }
-
-        // Update task
-        let nextDueDate = task.next_due_date;
-        if (task.frequency_days) {
-          const nextDate = new Date(today);
-          nextDate.setDate(nextDate.getDate() + task.frequency_days);
-          nextDueDate = nextDate.toISOString().split('T')[0];
-        }
-
-        db.run(
-          'UPDATE tasks SET last_completed = ?, next_due_date = ?, status = ? WHERE id = ?',
-          [today, nextDueDate, 'completed', taskId],
-          (err) => {
-            if (err) {
-              return res.status(500).json({ error: 'Failed to update task' });
-            }
-            res.json({ message: 'Task marked as complete', next_due_date: nextDueDate });
-          }
-        );
+  // Get task details with user info
+  db.get(
+    `SELECT t.*, u.email, u.name 
+     FROM tasks t 
+     JOIN users u ON t.user_id = u.id 
+     WHERE t.id = ? AND t.user_id = ?`,
+    [taskId, userId],
+    (err, task) => {
+      if (err) {
+        return res.status(500).json({ error: 'Database error' });
       }
-    );
-  });
+      if (!task) {
+        return res.status(404).json({ error: 'Task not found' });
+      }
+
+      const today = new Date().toISOString().split('T')[0];
+
+      // Add to history
+      db.run(
+        'INSERT INTO task_history (task_id, completed_date, notes) VALUES (?, ?, ?)',
+        [taskId, today, notes || null],
+        (err) => {
+          if (err) {
+            return res.status(500).json({ error: 'Failed to record completion' });
+          }
+
+          // Update task
+          let nextDueDate = task.next_due_date;
+          const isRecurring = !!task.frequency_days;
+          if (task.frequency_days) {
+            const nextDate = new Date(today);
+            nextDate.setDate(nextDate.getDate() + task.frequency_days);
+            nextDueDate = nextDate.toISOString().split('T')[0];
+          }
+
+          db.run(
+            'UPDATE tasks SET last_completed = ?, next_due_date = ?, status = ? WHERE id = ?',
+            [today, nextDueDate, 'completed', taskId],
+            (err) => {
+              if (err) {
+                return res.status(500).json({ error: 'Failed to update task' });
+              }
+
+              // Send completion confirmation email
+              sendCompletionEmail(
+                task.email,
+                task.name,
+                task.title,
+                today,
+                isRecurring ? nextDueDate : null,
+                isRecurring
+              );
+
+              res.json({ message: 'Task marked as complete', next_due_date: nextDueDate });
+            }
+          );
+        }
+      );
+    }
+  );
 });
 
 // Get task history

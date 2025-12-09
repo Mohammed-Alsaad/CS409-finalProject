@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { tasksAPI, Task } from '../api/api';
-import { isPast, isToday, differenceInDays } from 'date-fns';
+import { isPast, isToday, differenceInDays, format, isSameDay } from 'date-fns';
 import TaskCard from '../components/TaskCard';
 import TaskModal from '../components/TaskModal';
 import SuggestionsModal from '../components/SuggestionsModal';
+import CalendarView from '../components/CalendarView';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
@@ -15,6 +16,8 @@ const Dashboard: React.FC = () => {
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [showSuggestionsModal, setShowSuggestionsModal] = useState(false);
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'overdue' | 'completed'>('all');
+  const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(() => {
     loadTasks();
@@ -52,7 +55,18 @@ const Dashboard: React.FC = () => {
   };
 
   const getFilteredTasks = () => {
-    return tasks.filter(task => {
+    let filtered = tasks;
+    
+    // Apply date filter if a date is selected
+    if (selectedDate) {
+      filtered = filtered.filter(task => {
+        const taskDate = new Date(task.next_due_date);
+        return isSameDay(taskDate, selectedDate);
+      });
+    }
+    
+    // Apply status filter
+    return filtered.filter(task => {
       const dueDate = new Date(task.next_due_date);
       if (filter === 'upcoming') {
         return !isPast(dueDate) && !isToday(dueDate) && task.status === 'pending';
@@ -65,6 +79,17 @@ const Dashboard: React.FC = () => {
       }
       return true;
     });
+  };
+
+  const handleDateClick = (date: Date) => {
+    setSelectedDate(date);
+    setViewMode('list');
+    setFilter('all');
+  };
+
+  const handleCalendarTaskClick = (task: Task) => {
+    setSelectedTask(task);
+    setShowTaskModal(true);
   };
 
   const getTaskStatus = (task: Task) => {
@@ -126,36 +151,67 @@ const Dashboard: React.FC = () => {
           <button onClick={() => setShowSuggestionsModal(true)} className="btn-secondary">
             💡 Get Suggestions
           </button>
+          <div className="view-toggle">
+            <button
+              className={viewMode === 'list' ? 'active' : ''}
+              onClick={() => { setViewMode('list'); setSelectedDate(null); }}
+            >
+              📋 List
+            </button>
+            <button
+              className={viewMode === 'calendar' ? 'active' : ''}
+              onClick={() => { setViewMode('calendar'); setSelectedDate(null); }}
+            >
+              📅 Calendar
+            </button>
+          </div>
         </div>
 
-        <div className="filter-tabs">
-          <button
-            className={filter === 'all' ? 'active' : ''}
-            onClick={() => setFilter('all')}
-          >
-            All Tasks
-          </button>
-          <button
-            className={filter === 'overdue' ? 'active' : ''}
-            onClick={() => setFilter('overdue')}
-          >
-            Overdue
-          </button>
-          <button
-            className={filter === 'upcoming' ? 'active' : ''}
-            onClick={() => setFilter('upcoming')}
-          >
-            Upcoming
-          </button>
-          <button
-            className={filter === 'completed' ? 'active' : ''}
-            onClick={() => setFilter('completed')}
-          >
-            Completed
-          </button>
-        </div>
+        {selectedDate && (
+          <div className="selected-date-filter">
+            <span>Showing tasks for: <strong>{format(selectedDate, 'MMMM dd, yyyy')}</strong></span>
+            <button onClick={() => setSelectedDate(null)} className="btn-clear-filter">Clear</button>
+          </div>
+        )}
 
-        <div className="tasks-grid">
+        {viewMode === 'calendar' && (
+          <CalendarView
+            tasks={tasks}
+            onTaskClick={handleCalendarTaskClick}
+            onDateClick={handleDateClick}
+          />
+        )}
+
+        {viewMode === 'list' && (
+          <>
+            <div className="filter-tabs">
+              <button
+                className={filter === 'all' ? 'active' : ''}
+                onClick={() => setFilter('all')}
+              >
+                All Tasks
+              </button>
+              <button
+                className={filter === 'overdue' ? 'active' : ''}
+                onClick={() => setFilter('overdue')}
+              >
+                Overdue
+              </button>
+              <button
+                className={filter === 'upcoming' ? 'active' : ''}
+                onClick={() => setFilter('upcoming')}
+              >
+                Upcoming
+              </button>
+              <button
+                className={filter === 'completed' ? 'active' : ''}
+                onClick={() => setFilter('completed')}
+              >
+                Completed
+              </button>
+            </div>
+
+            <div className="tasks-grid">
           {filteredTasks.length === 0 ? (
             <div className="empty-state">
               <p>No tasks found. Add a new task or get suggestions!</p>
@@ -172,7 +228,9 @@ const Dashboard: React.FC = () => {
               />
             ))
           )}
-        </div>
+            </div>
+          </>
+        )}
       </div>
 
       {showTaskModal && (

@@ -42,6 +42,7 @@ function createTables() {
       description TEXT,
       category TEXT,
       frequency_days INTEGER,
+      reminder_days_before INTEGER DEFAULT 3,
       last_completed DATE,
       next_due_date DATE NOT NULL,
       status TEXT DEFAULT 'pending',
@@ -50,6 +51,16 @@ function createTables() {
       FOREIGN KEY (user_id) REFERENCES users(id)
     )
   `);
+
+  // Add reminder_days_before column to existing tables (migration)
+  db.run(`
+    ALTER TABLE tasks ADD COLUMN reminder_days_before INTEGER DEFAULT 3
+  `, (err) => {
+    // Ignore error if column already exists
+    if (err && !err.message.includes('duplicate column name')) {
+      console.error('Error adding reminder_days_before column:', err);
+    }
+  });
 
   // Task history table
   db.run(`
