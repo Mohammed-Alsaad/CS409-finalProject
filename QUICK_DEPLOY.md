@@ -5,13 +5,15 @@
 ### Step 1: Deploy Backend (Choose One)
 
 #### Option A: Railway (Easiest - Recommended)
+
 1. Go to [railway.app](https://railway.app) and sign up with GitHub
 2. Click **New Project** → **Deploy from GitHub repo**
 3. Select your repository
 4. Add environment variables from your `.env` file
-5. Your backend URL will be: `https://your-app.railway.app`
+5. Your backend URL will be: `https://your-app.railway.app `
 
 #### Option B: Render
+
 1. Go to [render.com](https://render.com) and sign up
 2. Click **New** → **Web Service**
 3. Connect your GitHub repo
@@ -57,14 +59,15 @@ That's it! 🎉
 ## 🔍 Troubleshooting
 
 **Frontend can't connect to backend?**
+
 - Check `REACT_APP_API_URL` secret is set correctly
 - Verify backend is running and accessible
 - Check browser console for errors
 
 **Deployment failed?**
+
 - Check the **Actions** tab for error messages
 - Make sure GitHub Pages is enabled
 - Verify all environment variables are set
 
 For detailed instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)
-
