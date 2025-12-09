@@ -9,6 +9,9 @@ dist/
 *.sqlite
 *.sqlite3
 
+# Supabase - database files no longer needed
+# server/database/maintenance.db
+
 # Test files
 test-email.js
 

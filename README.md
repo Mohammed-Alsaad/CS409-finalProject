@@ -156,12 +156,22 @@ The application includes a scheduled reminder system that runs daily at 9 AM. It
 
 ## Database
 
-The application uses SQLite for simplicity. The database file (`maintenance.db`) is created automatically in the `server/database/` directory on first run.
+The application uses **Supabase (PostgreSQL)** for persistent data storage. The database connection is configured via the `DATABASE_URL` environment variable.
+
+### Setup
+1. Create a Supabase account at [supabase.com](https://supabase.com)
+2. Create a new project
+3. Get your connection string from Settings → Database
+4. Add `DATABASE_URL` to your `.env` file
+
+See `SUPABASE_SETUP.md` for detailed setup instructions.
 
 ### Tables
 - **users**: User accounts and home information
 - **tasks**: Maintenance tasks
 - **task_history**: Completion history for tasks
+
+All tables are automatically created on first run.
 
 ## Development
 

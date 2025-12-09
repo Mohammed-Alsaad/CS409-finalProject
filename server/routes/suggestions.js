@@ -7,21 +7,22 @@ const router = express.Router();
 router.use(authenticateToken);
 
 // Get smart suggestions based on home type
-router.get('/', (req, res) => {
-  const db = getDb();
-  const userId = req.user.id;
+router.get('/', async (req, res) => {
+  try {
+    const db = getDb();
+    const userId = req.user.id;
 
-  // Get user's home type
-  db.get('SELECT home_type FROM users WHERE id = ?', [userId], (err, user) => {
-    if (err) {
-      return res.status(500).json({ error: 'Database error' });
-    }
+    // Get user's home type
+    const result = await db.query('SELECT home_type FROM users WHERE id = $1', [userId]);
 
-    const homeType = user?.home_type || 'house';
+    const homeType = result.rows[0]?.home_type || 'house';
     const suggestions = getSuggestionsForHomeType(homeType);
     
     res.json({ suggestions });
-  });
+  } catch (error) {
+    console.error('Get suggestions error:', error);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 function getSuggestionsForHomeType(homeType) {
@@ -109,4 +110,3 @@ function getSuggestionsForHomeType(homeType) {
 }
 
 module.exports = router;
-
