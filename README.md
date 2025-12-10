@@ -91,44 +91,6 @@ A simple and intuitive home maintenance task tracking application that helps ren
 5. **Complete Tasks**: Mark tasks as complete when finished
 6. **Set Reminders**: Tasks with due dates will automatically trigger email reminders 3 days before they're due
 
-## Project Structure
-
-```
-home-maintenance-planner/
-├── server/
-│   ├── database/
-│   │   └── db.js          # Database initialization and connection
-│   ├── middleware/
-│   │   └── auth.js        # JWT authentication middleware
-│   ├── routes/
-│   │   ├── auth.js        # Authentication routes
-│   │   ├── tasks.js       # Task management routes
-│   │   └── suggestions.js # Smart suggestions routes
-│   ├── services/
-│   │   ├── emailService.js      # Email sending service
-│   │   └── reminderService.js   # Scheduled reminder service
-│   └── index.js           # Express server setup
-├── client/
-│   ├── src/
-│   │   ├── api/
-│   │   │   └── api.ts     # API client and types
-│   │   ├── components/
-│   │   │   ├── TaskCard.tsx
-│   │   │   ├── TaskModal.tsx
-│   │   │   ├── SuggestionsModal.tsx
-│   │   │   └── PrivateRoute.tsx
-│   │   ├── context/
-│   │   │   └── AuthContext.tsx  # Authentication context
-│   │   ├── pages/
-│   │   │   ├── Login.tsx
-│   │   │   ├── Register.tsx
-│   │   │   └── Dashboard.tsx
-│   │   └── App.tsx
-│   └── package.json
-├── package.json
-└── README.md
-```
-
 ## API Endpoints
 
 ### Authentication
