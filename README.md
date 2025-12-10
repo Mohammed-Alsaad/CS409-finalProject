@@ -18,7 +18,7 @@ A simple and intuitive home maintenance task tracking application that helps ren
 
 ### Backend
 - **Node.js** with Express
-- **SQLite** database
+- **Postgres** database
 - **JWT** for authentication
 - **Nodemailer** for email reminders
 - **node-cron** for scheduled reminders
