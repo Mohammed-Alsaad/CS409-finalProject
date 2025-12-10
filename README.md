@@ -39,7 +39,7 @@ https://mohammed-alsaad.github.io/CS409-finalProject/
 
 ## Installation
  ```
-- npm install 
+ npm install 
  ```
 ### Prerequisites
 - Node.js (v14 or higher)
