@@ -18,20 +18,29 @@ A simple and intuitive home maintenance task tracking application that helps ren
 
 ### Backend
 - **Node.js** with Express
-- **Postgres** database
+- **PostgreSQL** database
 - **JWT** for authentication
 - **Nodemailer** for email reminders
 - **node-cron** for scheduled reminders
+
+
+Hosted on Render:
+https://home-maintenance-planner-api.onrender.com/
+
 
 ### Frontend
 - **React** with TypeScript
 - **React Router** for navigation
 - **Axios** for API calls
-- **date-fns** for date formatting
 - Modern CSS with gradient designs
 
-## Installation
+- Hosted on GitHub Pages:
+https://mohammed-alsaad.github.io/CS409-finalProject/
 
+## Installation
+ ```
+- npm install 
+ ```
 ### Prerequisites
 - Node.js (v14 or higher)
 - npm or yarn
@@ -112,28 +121,20 @@ A simple and intuitive home maintenance task tracking application that helps ren
 
 ## Email Reminders
 
-The application includes a scheduled reminder system that runs daily at 9 AM. It checks for tasks due in the next 3 days and sends email reminders.
+The application includes a scheduled reminder system that runs daily at 9 AM. It checks for tasks due in the next 3 days (configurable) and sends email reminders.
 
 **Note**: If SMTP credentials are not configured, reminders will be logged to the console instead of being sent via email.
 
 ## Database
 
-The application uses **Supabase (PostgreSQL)** for persistent data storage. The database connection is configured via the `DATABASE_URL` environment variable.
+The application uses **Supabase (PostgreSQL)** for persistent data storage.
 
-### Setup
-1. Create a Supabase account at [supabase.com](https://supabase.com)
-2. Create a new project
-3. Get your connection string from Settings → Database
-4. Add `DATABASE_URL` to your `.env` file
-
-See `SUPABASE_SETUP.md` for detailed setup instructions.
 
 ### Tables
 - **users**: User accounts and home information
 - **tasks**: Maintenance tasks
 - **task_history**: Completion history for tasks
 
-All tables are automatically created on first run.
 
 ## Development
 
@@ -143,12 +144,7 @@ cd client
 npm test
 ```
 
-### Building for Production
-```bash
-npm run build
-```
 
-This builds the React app for production to the `client/build` folder.
 
 ## Future Enhancements
 
@@ -163,8 +159,4 @@ This builds the React app for production to the `client/build` folder.
 ## License
 
 MIT
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
 
